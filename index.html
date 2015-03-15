@@ -9,7 +9,7 @@ var ctxx = new Ctx("canvas1");
 
 // http://www.web3d.org/documents/specifications/19774/V1.0/HAnim/FeaturePoints.html
 function Person(data, offset, joints) {
-  this.offset = {x: 200 , y: 0}
+  this.tran = new Transpose({x: 200 , y: 0})
 }
 
 Person.prototype = {
@@ -18,17 +18,12 @@ Person.prototype = {
     sellion:                 { pt:  1, x:   0, y: 50 },
   },
 
-  head: function() { return this.transpose({
+  head: function() { return this.tran.t({
       x: this.data.sellion.x,
       y: this.data.sellion.y,
       r: this.data.sellion.y - this.data.skull_tip.y
     });
   },
-  transpose: function(obj) {
-    obj.x += this.offset.x;
-    obj.y += this.offset.y;
-    return obj;
-  }
 }
 
 function PersonDrawer(person) {
@@ -39,26 +34,26 @@ PersonDrawer.prototype = {
   drawHead: function(ctxx) {
     var head = this.person.head();
 
-    ctxx.color("bisque").cir(head.x, head.y, head.r);
-    ctxx.color("","red",3).cir(head.x, head.y, 20, 0, 1, false);
+    ctxx.color("bisque").cir(head, head.r);
+    ctxx.color("","red",3).cir(head, 20, 0, 1, false);
 
     ctxx.color("green","")
-        .cir(190, 45, 3) //left
-        .cir(210, 45, 3) //right
+        .cir({x:190, y:45}, 3) //left
+        .cir({x:210, y:45}, 3) //right
   },
   drawBody: function(ctxx) {
     ctxx.color("","navy")
-        .go(200, 80).line(200, 180)
+        .go({x:200, y:80}).line({x: 200, y: 180})
   },
   drawArms: function(ctxx) {
     ctxx.color("", "#0000ff")
-      .go(200, 80).line(150, 130)
-      .go(200, 80).line(250, 130)
+      .go({x:200, y:80}).line({x: 150, y: 130})
+      .go({x:200, y:80}).line({x: 250, y: 130})
   },
   drawLegs: function(ctxx) {
     ctxx.color("","orange")
-        .go(200, 180).line(150, 280)
-        .go(200, 180).line(250, 280)
+        .go({x:200, y:180}).line({x: 150, y: 280})
+        .go({x:200, y:180}).line({x: 250, y: 280})
   },
   draw: function(ctxx) {
     this.drawHead(ctxx);
