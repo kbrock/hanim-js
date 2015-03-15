@@ -3,84 +3,71 @@
 <canvas id="canvas1" width="400px" height="300px" >
 Your browser does not support HTML5 Canvas element
 </canvas>
+<script src="js/ctx.js"></script>
 <script>
-var canvas = document.getElementById("canvas1");
-var ctx = canvas.getContext("2d"); // get Canvas Context object
+var ctxx = new Ctx("canvas1");
 
 // http://www.web3d.org/documents/specifications/19774/V1.0/HAnim/FeaturePoints.html
-function Person(head, num_heads) {
-  this.p0     = 20;
-  this.offset = 50;
-  this.center = 200;
-  this.head_height = head;
-  this.num_heads = num_heads || 8;
+function Person(data, offset, joints) {
+  this.offset = {x: 200 , y: 0}
 }
+
 Person.prototype = {
-  head: function() {
-    return { cx: this.center, cy: this.offset, r: 50};
+  data: {
+    skull_tip:               { pt:  0, x:   0, y: 20 },
+    sellion:                 { pt:  1, x:   0, y: 50 },
   },
-  height: function() { return this.head_height * this.num_heads; }
+
+  head: function() { return this.transpose({
+      x: this.data.sellion.x,
+      y: this.data.sellion.y,
+      r: this.data.sellion.y - this.data.skull_tip.y
+    });
+  },
+  transpose: function(obj) {
+    obj.x += this.offset.x;
+    obj.y += this.offset.y;
+    return obj;
+  }
 }
 
 function PersonDrawer(person) {
   this.person = person;
 }
+
 PersonDrawer.prototype = {
-  drawHead: function(context) {
+  drawHead: function(ctxx) {
     var head = this.person.head();
-    context.beginPath();
-    context.fillStyle = "bisque"; // #ffe4c4
-    context.arc(head.cx, head.cy, head.r, 0, Math.PI * 2, true); // draw circle for head
-    // (x,y) center, radius, start angle, end angle, anticlockwise
-    context.fill();
 
-    context.beginPath();
-    context.strokeStyle = "red"; // color
-    context.lineWidth = 3;
-    context.arc(head.cx, head.cy, 20, 0, Math.PI, false); // draw semicircle for smiling
-    context.stroke();
+    ctxx.color("bisque").cir(head.x, head.y, head.r);
+    ctxx.color("","red",3).cir(head.x, head.y, 20, 0, 1, false);
 
-    // eyes
-    context.beginPath();
-    context.fillStyle = "green"; // color
-    context.arc(190, 45, 3, 0, Math.PI * 2, true); // draw left eye
-    context.fill();
-    context.arc(210, 45, 3, 0, Math.PI * 2, true); // draw right eye
-    context.fill();
+    ctxx.color("green","")
+        .cir(190, 45, 3) //left
+        .cir(210, 45, 3) //right
   },
-  drawBody: function(context) {
-    context.beginPath();
-    context.moveTo(200, 80);
-    context.lineTo(200, 180);
-    context.strokeStyle = "navy";
-    context.stroke();
+  drawBody: function(ctxx) {
+    ctxx.color("","navy")
+        .go(200, 80).line(200, 180)
   },
-  drawArms: function(context) {
-    context.beginPath();
-    context.strokeStyle = "#0000ff"; // blue
-    context.moveTo(200, 80);
-    context.lineTo(150, 130);
-    context.moveTo(200, 80);
-    context.lineTo(250, 130);
-    context.stroke();
+  drawArms: function(ctxx) {
+    ctxx.color("", "#0000ff")
+      .go(200, 80).line(150, 130)
+      .go(200, 80).line(250, 130)
   },
-  drawLegs: function(context) {
-    context.beginPath();
-    context.strokeStyle = "orange";
-    context.moveTo(200, 180);
-    context.lineTo(150, 280);
-    context.moveTo(200, 180);
-    context.lineTo(250, 280);
-    context.stroke();
+  drawLegs: function(ctxx) {
+    ctxx.color("","orange")
+        .go(200, 180).line(150, 280)
+        .go(200, 180).line(250, 280)
   },
-  draw: function(context) {
-    this.drawHead(context);
-    this.drawBody(context);
-    this.drawArms(context);
-    this.drawLegs(context);
+  draw: function(ctxx) {
+    this.drawHead(ctxx);
+    this.drawBody(ctxx);
+    this.drawArms(ctxx);
+    this.drawLegs(ctxx);
   }
 }
-new PersonDrawer(new Person()).draw(ctx);
+new PersonDrawer(new Person()).draw(ctxx);
 </script>
 </body>
 </html>
