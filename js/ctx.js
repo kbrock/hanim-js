@@ -50,8 +50,9 @@ Ctx.prototype = {
   }
 };
 
-function Transpose(attrs) {
-  this.attrs = attrs;
+function Transpose(adds, mults) {
+  this.adds = adds || {};
+  this.mults = mults || {};
 }
 
 Transpose.prototype = {
@@ -60,9 +61,14 @@ Transpose.prototype = {
     for (var k in obj) {
       ret[k] = obj[k];
     }
-    for (k in this.attrs) {
+    for (k in this.mults) {
       if (ret[k] !== undefined) {
-        ret[k] += this.attrs[k];
+        ret[k] *= this.mults[k];
+      }
+    }
+    for (k in this.adds) {
+      if (ret[k] !== undefined) {
+        ret[k] += this.adds[k];
       }
     }
     return ret;

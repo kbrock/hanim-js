@@ -8,8 +8,8 @@ Your browser does not support HTML5 Canvas element
 var ctxx = new Ctx("canvas1");
 
 // http://www.web3d.org/documents/specifications/19774/V1.0/HAnim/FeaturePoints.html
-function Person(data, tran, joints) {
-  this.tran = new Transpose(tran || {x: 200 , y: 0})
+function Person(data, tran, mults) {
+  this.tran = new Transpose(tran || {x: 200 , y: 0}, mults)
   this.d = data = data || {
     skull_tip:               { pt:  0, x:   0, y:  20 },
     sellion:                 { pt:  1, x:   0, y:  50 },
@@ -36,15 +36,15 @@ PersonDrawer.prototype = {
     var p = this.person.data();
     var t = this.person.tran;
     var head = t.t(p.sellion);
-    var headR = p.sellion.y - p.skull_tip.y;
+    var headR = head.y - t.t(p.skull_tip).y;
     var mouthR = headR * 2 / 3;
-
+    var lineR = headR/10;
     ctxx.color("bisque").cir(head, headR);
-    ctxx.color("","red",3).cir(head, mouthR, 0, 1, false);
+    ctxx.color("","red",lineR).cir(head, mouthR, 0, 1, false);
 
     ctxx.color("green","")
-        .cir(t.t({x:-10, y:45}), 3) //left eye
-        .cir(t.t({x: 10, y:45}), 3) //right eye
+        .cir(t.t({x:-10, y:45}), lineR) //left eye
+        .cir(t.t({x: 10, y:45}), lineR) //right eye
   },
   drawBody: function(ctxx) {
     var p = this.person.data();
@@ -74,7 +74,7 @@ PersonDrawer.prototype = {
     this.drawLegs(ctxx);
   }
 }
-new PersonDrawer(new Person()).draw(ctxx);
+new PersonDrawer(new Person(null, null, {x: 1, y: 1})).draw(ctxx);
 </script>
 </body>
 </html>
