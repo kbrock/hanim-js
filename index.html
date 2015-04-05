@@ -8,22 +8,23 @@ Your browser does not support HTML5 Canvas element
 var ctxx = new Ctx("canvas1");
 
 // http://www.web3d.org/documents/specifications/19774/V1.0/HAnim/FeaturePoints.html
-function Person(data, offset, joints) {
-  this.tran = new Transpose({x: 200 , y: 0})
+function Person(data, tran, joints) {
+  this.tran = new Transpose(tran || {x: 200 , y: 0})
+  this.d = data = data || {
+    skull_tip:               { pt:  0, x:   0, y:  20 },
+    sellion:                 { pt:  1, x:   0, y:  50 },
+    r_radial_styloid:        { pt: 31, x:  50, y: 130 },
+    l_radial_styloid:        { pt: 43, x: -50, y: 130 },
+    r_sphyrion:              { pt: 59, x:  50, y: 280 },
+    l_sphyrion:              { pt: 69, x: -50, y: 280 },
+    crotch:                  { pt: 73, x:   0, y: 180 }
+    };
+  //temporary
+  data.cervicale = { pt: 24, y: (data.skull_tip.y + (data.sellion.y - data.skull_tip.y) * 2), x: data.skull_tip.x};
 }
 
 Person.prototype = {
-  data: {
-    skull_tip:               { pt:  0, x:   0, y: 20 },
-    sellion:                 { pt:  1, x:   0, y: 50 },
-  },
-
-  head: function() { return this.tran.t({
-      x: this.data.sellion.x,
-      y: this.data.sellion.y,
-      r: this.data.sellion.y - this.data.skull_tip.y
-    });
-  },
+  data: function() { return this.d; }
 }
 
 function PersonDrawer(person) {
@@ -32,28 +33,39 @@ function PersonDrawer(person) {
 
 PersonDrawer.prototype = {
   drawHead: function(ctxx) {
-    var head = this.person.head();
+    var p = this.person.data();
+    var t = this.person.tran;
+    var head = t.t(p.sellion);
+    var headR = p.sellion.y - p.skull_tip.y;
+    var mouthR = headR * 2 / 3;
 
-    ctxx.color("bisque").cir(head, head.r);
-    ctxx.color("","red",3).cir(head, 20, 0, 1, false);
+    ctxx.color("bisque").cir(head, headR);
+    ctxx.color("","red",3).cir(head, mouthR, 0, 1, false);
 
     ctxx.color("green","")
-        .cir({x:190, y:45}, 3) //left
-        .cir({x:210, y:45}, 3) //right
+        .cir(t.t({x:-10, y:45}), 3) //left eye
+        .cir(t.t({x: 10, y:45}), 3) //right eye
   },
   drawBody: function(ctxx) {
+    var p = this.person.data();
+    var t = this.person.tran;
     ctxx.color("","navy")
-        .go({x:200, y:80}).line({x: 200, y: 180})
+        .go(t.t(p.cervicale))
+        .line(t.t(p.crotch));
   },
   drawArms: function(ctxx) {
+    var p = this.person.data();
+    var t = this.person.tran;
     ctxx.color("", "#0000ff")
-      .go({x:200, y:80}).line({x: 150, y: 130})
-      .go({x:200, y:80}).line({x: 250, y: 130})
+      .go(t.t(p.cervicale)).line(t.t(p.r_radial_styloid))
+      .go(t.t(p.cervicale)).line(t.t(p.l_radial_styloid))
   },
   drawLegs: function(ctxx) {
+    var p = this.person.data();
+    var t = this.person.tran;
     ctxx.color("","orange")
-        .go({x:200, y:180}).line({x: 150, y: 280})
-        .go({x:200, y:180}).line({x: 250, y: 280})
+        .go(t.t(p.crotch)).line(t.t(p.r_sphyrion))
+        .go(t.t(p.crotch)).line(t.t(p.l_sphyrion))
   },
   draw: function(ctxx) {
     this.drawHead(ctxx);
