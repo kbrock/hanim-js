@@ -25,6 +25,7 @@ function PersonDrawer(person) {
 }
 
 PersonDrawer.prototype = {
+  // hanim: skull base
   drawHead: function(ctxx) {
     var p = this.person.data();
     var t = this.person.tran;
@@ -43,15 +44,18 @@ PersonDrawer.prototype = {
     var p = this.person.data();
     var t = this.person.tran;
     ctxx.color("","navy")
-    ctxx.go(t.t(p.l_neck_base))
-    .line(t.t(p.cervicale))
-    .line(t.t(p.r_neck_base))
-    .line(t.t(p.r_acromion))
-    .line(t.t(p.r_axilla_ant))
-    .line(t.t(p.substernale))
-    .line(t.t(p.l_axilla_ant))
-    .line(t.t(p.l_acromion))
-    .line(t.t(p.l_neck_base))
+    // shoulders
+    ctxx.go(t.t(p[74])) // r_neck_base
+    .line(t.t(p[24]))   // cervicale
+    .line(t.t(p[75]))   // l_neck_base
+    .line(t.t(p[41]))   // l_acromion
+    .line(t.t(p[42]))   // l_axilla_ant
+    .line(t.t(p[15]))   // substernale
+    .line(t.t(p[30]))   // r_axilla_ant
+    .line(t.t(p[29]))   // r_acromion
+    .line(t.t(p[74]))   // r_neck_base
+
+    // torso
     ctxx.color("","navy")
     ctxx.go(t.t(p[42]))  // l_axilla_ant
     .line(t.t(p[18]))    // l_rib10
@@ -70,12 +74,18 @@ PersonDrawer.prototype = {
       .go(t.t(p.r_acromion)).line(t.t(p.r_radial_styloid))
       .go(t.t(p.l_acromion)).line(t.t(p.l_radial_styloid))
   },
+  // thigh, shank, foot
   drawLegs: function(ctxx) {
     var p = this.person.data();
     var t = this.person.tran;
     ctxx.color("","orange")
-        .go(t.t(p.crotch)).line(t.t(p.r_sphyrion))
-        .go(t.t(p.crotch)).line(t.t(p.l_sphyrion))
+        .go(t.t(p[23]))
+        .line(t.t(p[66]))
+        .line(t.t(p[70]))
+        .line(t.t(p[73]))
+        .line(t.t(p[60]))
+        .line(t.t(p[56]))
+        .line(t.t(p[21]))
   },
   draw: function(ctxx) {
     this.drawHead(ctxx);
