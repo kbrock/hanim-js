@@ -44,16 +44,24 @@ PersonDrawer.prototype = {
     var t = this.person.tran;
     ctxx.color("","navy")
     ctxx.go(t.t(p.l_neck_base))
-    .line(t.t(p.l_neck_base))
     .line(t.t(p.cervicale))
     .line(t.t(p.r_neck_base))
     .line(t.t(p.r_acromion))
+    .line(t.t(p.r_axilla_ant))
     .line(t.t(p.substernale))
+    .line(t.t(p.l_axilla_ant))
     .line(t.t(p.l_acromion))
     .line(t.t(p.l_neck_base))
-    ctxx.color("","red")
-    .go(t.t(p.suprasternale))
-    .line(t.t(p.crotch))
+    ctxx.color("","navy")
+    ctxx.go(t.t(p[42]))  // l_axilla_ant
+    .line(t.t(p[18]))    // l_rib10
+    .line(t.t(p[22]))    // l_iliocristale
+    .line(t.t(p[23]))    // l_trochanterion
+    .line(t.t(p[73]))    // crotch
+    .line(t.t(p[21]))    // r_trochanterion
+    .line(t.t(p[20]))    // r_iliocristale
+    .line(t.t(p[16]))    // r_rib10
+    .line(t.t(p[30]))    // r_axilla_ant
   },
   drawArms: function(ctxx) {
     var p = this.person.data();
